@@ -1,10 +1,11 @@
 {
 	"info": {
 		"_postman_id": "jumbo-api-collection",
-		"name": "Jumbo API",
-		"description": "Complete API collection for Jumbo.com basket & product management",
+		"name": "Jumbo API v2.6.0",
+		"description": "Complete API collection for Jumbo.com basket & product management with barcode lookup, receipt matching, and customizable settings. Features quantity-aware search, OpenFoodFacts fallback, and configurable matching weights.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "jumbo-api"
+		"_exporter_id": "jumbo-api",
+		"version": "2.6.0"
 	},
 	"item": [
 		{
@@ -298,6 +299,33 @@
 						"description": "Fetch detailed information about a specific order including all products"
 					},
 					"response": []
+				},
+				{
+					"name": "Get Receipt Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/receipts/:transaction_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"receipts",
+								":transaction_id"
+							],
+							"variable": [
+								{
+									"key": "transaction_id",
+									"value": "store/1234567890123/transaction/98765",
+									"description": "Receipt transaction ID (format: store/{storeId}/transaction/{transactionId})"
+								}
+							]
+						},
+						"description": "Fetch detailed store receipt with product matching, parsed items, VAT breakdown, and loyalty points"
+					},
+					"response": []
 				}
 			],
 			"description": "Order and receipt history"
@@ -311,7 +339,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/products/search?sku=227462POT",
+							"raw": "{{base_url}}/api/products/search?sku=629682FLS",
 							"host": [
 								"{{base_url}}"
 							],
@@ -323,12 +351,12 @@
 							"query": [
 								{
 									"key": "sku",
-									"value": "227462POT",
+									"value": "629682FLS",
 									"description": "Product SKU code"
 								}
 							]
 						},
-						"description": "Look up a product by its Jumbo SKU code with full details including nutrition, allergens, images, and more"
+						"description": "Look up a product by its Jumbo SKU code with comprehensive details including nutrition, allergens, images, pricing, promotions, stock availability, and more"
 					},
 					"response": []
 				},
@@ -344,7 +372,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"barcode\": \"8718452044801\"\n}"
+							"raw": "{\n  \"barcode\": \"8718452829408\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/products/barcode",
@@ -357,12 +385,114 @@
 								"barcode"
 							]
 						},
-						"description": "Resolve an EAN barcode to a Jumbo product (uses local cache)"
+						"description": "Resolve an EAN barcode to a Jumbo product using intelligent matching with quantity-aware search, configurable weights, and OpenFoodFacts fallback (uses cached matches when available)"
 					},
 					"response": []
 				}
 			],
 			"description": "Product search and lookup"
+		},
+		{
+			"name": "Settings",
+			"item": [
+				{
+					"name": "Get Settings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/settings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"settings"
+							]
+						},
+						"description": "Get current user preferences including matching weights, confidence thresholds, search options, EAN scoring, and cache settings"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Settings",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productMatchingEnabled\": true,\n  \"strictMatching\": true,\n  \"confidenceThreshold\": 80,\n  \"useWeightMatching\": true,\n  \"usePriceMatching\": true,\n  \"useNameMatching\": true,\n  \"useOpenFoodFactsFallback\": true,\n  \"maxProductCandidates\": 15,\n  \"useQuantityInSearch\": true,\n  \"useBrandInSearch\": false,\n  \"useBarcodeCache\": true,\n  \"priceMatchWeight\": 40,\n  \"weightMatchWeight\": 30,\n  \"nameMatchWeight\": 30,\n  \"eanScore10Plus\": 90,\n  \"eanScore8Plus\": 70,\n  \"eanScore6Plus\": 50,\n  \"eanScore4Plus\": 30\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/settings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"settings"
+							]
+						},
+						"description": "Update user preferences for product matching algorithm, search behavior, and cache control"
+					},
+					"response": []
+				},
+				{
+					"name": "Clear Product Cache",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/settings/clear-cache",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"settings",
+								"clear-cache"
+							]
+						},
+						"description": "Clear the barcode-to-product match cache to force fresh lookups"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Credentials",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"user@example.com\",\n  \"password\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/settings/credentials",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"settings",
+								"credentials"
+							]
+						},
+						"description": "Update saved login credentials (writes to .env file)"
+					},
+					"response": []
+				}
+			],
+			"description": "User preferences and configuration management"
 		},
 		{
 			"name": "System",

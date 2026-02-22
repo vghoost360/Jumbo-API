@@ -1,0 +1,137 @@
+# Jumbo API
+
+Dockerised REST API and web dashboard for the Jumbo.com grocery platform.
+Automates login via headless Chromium, manages your basket, shopping lists (lijstjes), and looks up products by SKU or EAN barcode.
+
+## 🚀 Quick Start
+
+```bash
+docker compose up --build -d
+```
+
+- **Web Dashboard:** http://localhost:8000
+- **API Documentation:** http://localhost:8000/docs (Swagger UI)
+- **Complete API Guide:** [API_README.md](API_README.md)
+
+## 📚 Documentation
+
+### Interactive API Explorer
+Visit **http://localhost:8000/docs** for the full Swagger/OpenAPI documentation where you can:
+- Try all endpoints directly in your browser
+- See request/response schemas
+- Test authentication flows
+- No code required
+
+### Comprehensive API Reference
+See **[API_README.md](API_README.md)** for:
+- Complete endpoint documentation
+- Authentication guides
+- Code examples in Python, JavaScript, and cURL
+- Architecture overview
+- Troubleshooting tips
+
+## ✨ Features
+
+- 🛒 **Basket Management** - View, add, remove, and update quantities
+- 📝 **Shopping Lists** - Access all your lijstjes with full product details
+- 🔍 **Product Search** - Search by SKU or EAN barcode
+- 🔐 **Secure Authentication** - Automated Selenium-based login with cookie persistence
+- 🔄 **Auto Re-authentication** - Automatically re-login when session expires
+- 💾 **Credential Storage** - Optionally save credentials for persistent authentication
+- 🎨 **Modern UI** - Dark-themed web dashboard
+- 📊 **Command History** - Track all API operations
+- 🐳 **Fully Dockerized** - One-command deployment
+
+## 🔐 Authentication & Auto Re-login
+
+The API supports automatic re-authentication to keep your session alive indefinitely:
+
+### Option 1: Environment Variables (Recommended for Homelab)
+Set credentials via environment variables in Portainer or docker-compose:
+
+```yaml
+environment:
+  - JUMBO_USERNAME=your-email@example.com
+  - JUMBO_PASSWORD=your-password
+```
+
+### Option 2: Using .env File
+```bash
+cp .env.example .env
+# Edit .env with your credentials
+docker-compose up -d
+```
+
+### Option 3: Manual Login with Auto-Save
+Login once via API - credentials will be saved automatically:
+
+```bash
+curl -X POST http://localhost:8000/api/login \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "your-email@example.com",
+    "password": "your-password"
+  }'
+```
+
+**How it works:**
+- Session cookies are automatically saved to `/app/data/session-cookies.json`
+- Credentials are saved to `/app/data/credentials.json` (or use env vars)
+- When cookies expire, the API automatically re-authenticates using saved credentials
+- All basket operations continue seamlessly without manual intervention
+
+## 🔑 Quick API Examples
+
+### Get Basket
+```bash
+curl http://localhost:8000/api/basket
+```
+
+### Add Product
+```bash
+curl -X POST http://localhost:8000/api/basket/add \
+  -H 'Content-Type: application/json' \
+  -d '{"sku":"67649PAK","quantity":2}'
+```
+
+### Update Quantity
+```bash
+curl -X PATCH http://localhost:8000/api/basket/items/{line_id} \
+  -H 'Content-Type: application/json' \
+  -d '{"quantity":5}'
+```
+
+### Get Shopping Lists
+```bash
+curl http://localhost:8000/api/lists
+```
+
+**For more examples, see [API_README.md](API_README.md)**
+
+## 🏗️ Project Structure
+
+```
+app/
+  main.py            # FastAPI application & REST endpoints
+  jumbo_client.py    # Jumbo GraphQL client + Selenium auth
+  templates/         # Jinja2 HTML dashboard
+  static/            # CSS & JavaScript
+  Dockerfile
+  requirements.txt
+data/
+  jumbo-cookies.json # Saved session cookies
+  barcode-cache.json # Product barcode cache
+docker-compose.yml
+API_README.md        # Complete API documentation
+```
+
+## 🛠️ Tech Stack
+
+- **Python 3.11** / FastAPI / Uvicorn
+- **Selenium** (headless Chromium) for cookie-based authentication
+- **httpx** async HTTP client for GraphQL
+- **Docker** (`python:3.11-slim` + Chromium)
+
+## 📝 License
+
+This project is for educational purposes. Jumbo.com's Terms of Service apply to API usage.

@@ -1,0 +1,1 @@
+{"query":"{ __schema { queryType { fields { name description args { name type { name kind ofType { name } } } } } } }"}

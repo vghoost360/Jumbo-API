@@ -1,0 +1,426 @@
+{
+	"info": {
+		"_postman_id": "jumbo-api-collection",
+		"name": "Jumbo API",
+		"description": "Complete API collection for Jumbo.com basket & product management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "jumbo-api"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						},
+						"description": "Automate browser login via Selenium and capture session cookies"
+					},
+					"response": []
+				},
+				{
+					"name": "Auth Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"status"
+							]
+						},
+						"description": "Return whether the client holds valid session cookies"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for login and session management"
+		},
+		{
+			"name": "Basket",
+			"item": [
+				{
+					"name": "Get Basket",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/basket",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"basket"
+							]
+						},
+						"description": "Fetch the active basket including product details and prices"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Product to Basket",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sku\": \"67649PAK\",\n  \"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/basket/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"basket",
+								"add"
+							]
+						},
+						"description": "Add a product by SKU (with optional quantity) to the basket"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Product from Basket",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"line_id\": \"line-id-here\",\n  \"sku\": \"67649PAK\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/basket/remove",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"basket",
+								"remove"
+							]
+						},
+						"description": "Remove a basket line by its ID or by product SKU"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Basket Item Quantity",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quantity\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/basket/items/:line_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"basket",
+								"items",
+								":line_id"
+							],
+							"variable": [
+								{
+									"key": "line_id",
+									"value": "line-id-here",
+									"description": "Basket line ID"
+								}
+							]
+						},
+						"description": "Update the quantity of a specific basket item by its line ID"
+					},
+					"response": []
+				}
+			],
+			"description": "Basket management endpoints"
+		},
+		{
+			"name": "Lists",
+			"item": [
+				{
+					"name": "Get Shopping Lists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lists",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lists"
+							]
+						},
+						"description": "Fetch all customer shopping lists (lijstjes) including favorites"
+					},
+					"response": []
+				},
+				{
+					"name": "Get List by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/lists/:list_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lists",
+								":list_id"
+							],
+							"variable": [
+								{
+									"key": "list_id",
+									"value": "list-id-here",
+									"description": "Shopping list ID"
+								}
+							]
+						},
+						"description": "Fetch a specific shopping list with full product details"
+					},
+					"response": []
+				}
+			],
+			"description": "Shopping list (lijstjes) management"
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Get Orders and Receipts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/orders?limit=10&page=0&page_size=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of orders to fetch"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page number for receipts"
+								},
+								{
+									"key": "page_size",
+									"value": "10",
+									"description": "Number of receipts per page"
+								}
+							]
+						},
+						"description": "Fetch online orders and store receipts history"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:order_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								":order_id"
+							],
+							"variable": [
+								{
+									"key": "order_id",
+									"value": "12345",
+									"description": "Order ID"
+								}
+							]
+						},
+						"description": "Fetch detailed information about a specific order including all products"
+					},
+					"response": []
+				}
+			],
+			"description": "Order and receipt history"
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Search Product by SKU",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/products/search?sku=227462POT",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"search"
+							],
+							"query": [
+								{
+									"key": "sku",
+									"value": "227462POT",
+									"description": "Product SKU code"
+								}
+							]
+						},
+						"description": "Look up a product by its Jumbo SKU code with full details including nutrition, allergens, images, and more"
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup Product by Barcode",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"8718452044801\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products/barcode",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"barcode"
+							]
+						},
+						"description": "Resolve an EAN barcode to a Jumbo product (uses local cache)"
+					},
+					"response": []
+				}
+			],
+			"description": "Product search and lookup"
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						},
+						"description": "Lightweight health probe used by Docker HEALTHCHECK"
+					},
+					"response": []
+				},
+				{
+					"name": "Command History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/history?limit=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"history"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of recent commands to retrieve"
+								}
+							]
+						},
+						"description": "Return the last N commands executed through the API"
+					},
+					"response": []
+				}
+			],
+			"description": "System health and monitoring"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}

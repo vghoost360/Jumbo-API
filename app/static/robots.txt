@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /feed
+Disallow: /rss
+Disallow: /blog
+Disallow: /articles
+Disallow: *.xml
+Disallow: *.rss
+
+Allow: /docs
+Allow: /api

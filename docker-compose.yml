@@ -1,0 +1,34 @@
+services:
+  jumbo-api:
+    image: vghoost360/jumbo:local-test
+    container_name: jumbo-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - jumbo-data:/app/data
+    environment:
+      - TZ=Europe/Amsterdam
+      # Optional: Set credentials for automatic login on startup
+      # WARNING: For security, use Docker secrets or Portainer environment variables
+      # Do NOT commit credentials to git!
+      # - JUMBO_USERNAME=your-email@example.com
+      # - JUMBO_PASSWORD=your-password
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  jumbo-data:
+    driver: local
